@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - appnet
+    volumes:
+      - ./mongo-volume:/data/db
+
+  myapp:
+    image: myapp
+    depends_on:
+      - "mongo"
+    ports:
+      - "5000:5000"
+    environment:
+      MONGO_URI: "mongodb://mongo:27017/SomeDatabase"
+    networks:
+     - appnet
+    volumes:
+      - ./myapp/src:/usr/src/app
+    
+networks:
+  appnet:
+    driver: bridge
+
